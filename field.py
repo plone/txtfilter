@@ -1,7 +1,7 @@
 """
 shamelessly derived from ben's smartlink
 
-$Id: $
+$Id:$
 """
 
 __authors__ = 'Benjamin Saller <bcsaller@objectrealms.net>'
@@ -37,7 +37,8 @@ class FilterField(atapi.TextField):
         for filter_name in filters:
             yield getFilter(filter_name) 
 
-    def get(self, instance, mimetype=None, raw=False, **kwargs):
+    def get(self, instance, mimetype=None, raw=False, skip_filters=False,
+            **kwargs):
         """from SmartLinkField: Do normal textfield get followed by filtering.
         Whats interesting about this is that we need to staticly
         encode this join point. The basic of the Archetypes V2 model
@@ -53,7 +54,7 @@ class FilterField(atapi.TextField):
                                     raw,
                                     **kwargs)
 
-        if raw: return value
+        if raw or skip_filters: return value
 
         filters = self.filter
 
