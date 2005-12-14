@@ -1,0 +1,32 @@
+<configure xmlns="http://namespaces.zope.org/archetypes">
+  <!-- this is the inanity of zcml that indicated
+       we need a new fricking directive -->
+
+  <!-- the fieldfilter directive will take all the same 
+       arguments as the adapter directive, but 
+       defaults to a filter=filter.name and 
+       provides=IFieldFilter 
+
+    just as soon as I can get it to work ;) -->
+
+  <fieldfilter
+     for="Products.filter.interface.IFilterable"
+     factory="Products.filter.filter.MacroSubstitutionFilter"
+     />
+
+  <fieldfilter
+     for="Products.filter.interface.IFilterable"
+     factory="Products.filter.filter.ReferenceLinkFilter"
+     />
+  
+  <fieldfilter
+     for="Products.filter.interface.IFilterable"
+     factory="Products.filter.filter.WeakWikiFilter"
+     />
+  
+  <fieldfilter
+     for="Products.filter.interface.IFilterable"
+     factory="Products.filter.filter.PaginatingFilter"
+     />
+
+</configure>
