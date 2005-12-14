@@ -7,7 +7,7 @@ import zope.schema
 
 import zope.app.security.fields
 import zope.app.component.metadirectives 
-import Products.filter.interface
+import Products.filter.interfaces
 
 class IFieldFilterDirective(zope.app.component.metadirectives.IAdapterDirective):
     """
@@ -19,7 +19,7 @@ class IFieldFilterDirective(zope.app.component.metadirectives.IAdapterDirective)
         description=u"""This attribute specifes the interface the adapter
         instance must provide.""",
         required=True,
-        default=Products.filter.interface.IFieldFilter
+        default=Products.filter.interfaces.IFieldFilter
         )
     
     trusted = zope.configuration.fields.Bool(

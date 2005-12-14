@@ -5,7 +5,7 @@ from Products.PageTemplates.Expressions import getEngine
 from os.path import abspath, dirname, join
 from cStringIO import StringIO
 
-from Products.filter.interface import IFieldFilter
+from Products.filter.interfaces import IFieldFilter
 
 TYPEMAP = {
     # strings = True, iterables = false

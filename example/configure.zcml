@@ -12,33 +12,33 @@
 
   <adapter
      name = "Macro Substitution Filter"
-     for="Products.filter.interface.IFilterable"
+     for="Products.filter.interfaces.IFilterable"
      factory="Products.filter.filter.MacroSubstitutionFilter"
-     provides="Products.filter.interface.IFieldFilter"
+     provides="Products.filter.interfaces.IFieldFilter"
      permission="zope2.Public"
      />
 
   <adapter
      name = "Reference Link"
-     for="Products.filter.interface.IFilterable"
+     for="Products.filter.interfaces.IFilterable"
      factory="Products.filter.filter.ReferenceLinkFilter"
-     provides="Products.filter.interface.IFieldFilter"
+     provides="Products.filter.interfaces.IFieldFilter"
      permission="zope2.Public"
      />
 
   <adapter
      name = "Weak Wiki Filter"
-     for="Products.filter.interface.IFilterable"
+     for="Products.filter.interfaces.IFilterable"
      factory="Products.filter.filter.WeakWikiFilter"
-     provides="Products.filter.interface.IFieldFilter"
+     provides="Products.filter.interfaces.IFieldFilter"
      permission="zope2.Public"
      />
 
   <adapter
      name = "HTML Paginator"
-     for="Products.filter.interface.IFilterable"
+     for="Products.filter.interfaces.IFilterable"
      factory="Products.filter.filter.PaginatingFilter"
-     provides="Products.filter.interface.IFieldFilter"
+     provides="Products.filter.interfaces.IFieldFilter"
      permission="zope2.Public"
      />
 

@@ -26,7 +26,7 @@ except ImportError:
     refwidget = atapi.ReferenceWidget
 
 from Products.filter import utils, field, config, api
-from Products.filter.interface import IFilterable
+from Products.filter.interfaces import IFilterable
 
 schema = atapi.BaseSchema.copy() + atapi.Schema((
     field.FilterField( "body",

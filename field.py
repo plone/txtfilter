@@ -13,7 +13,7 @@ from Products.CMFCore.utils import getToolByName
 from ZODB.POSException import ConflictError
 from AccessControl import ClassSecurityInfo
 
-from Products.filter.interface import IFieldFilter, IFilterField
+from Products.filter.interfaces import IFieldFilter, IFilterField
 
 from utils import TYPEMAP
 from zope.app import zapi

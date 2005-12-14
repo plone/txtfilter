@@ -13,7 +13,7 @@ from Products.filter.utils import macro_render, createContext, ijoin
 from Products.PageTemplates.Expressions import PathExpr, getEngine
 
 from zope.interface import implements
-from interface import IFieldFilter
+from interfaces import IFieldFilter
 
 import re
 

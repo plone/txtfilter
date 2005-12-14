@@ -10,22 +10,22 @@
     just as soon as I can get it to work ;) -->
 
   <fieldfilter
-     for="Products.filter.interface.IFilterable"
+     for="Products.filter.interfaces.IFilterable"
      factory="Products.filter.filter.MacroSubstitutionFilter"
      />
 
   <fieldfilter
-     for="Products.filter.interface.IFilterable"
+     for="Products.filter.interfaces.IFilterable"
      factory="Products.filter.filter.ReferenceLinkFilter"
      />
   
   <fieldfilter
-     for="Products.filter.interface.IFilterable"
+     for="Products.filter.interfaces.IFilterable"
      factory="Products.filter.filter.WeakWikiFilter"
      />
   
   <fieldfilter
-     for="Products.filter.interface.IFilterable"
+     for="Products.filter.interfaces.IFilterable"
      factory="Products.filter.filter.PaginatingFilter"
      />
 
