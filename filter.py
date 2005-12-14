@@ -12,64 +12,25 @@ from ZODB.POSException import ConflictError
 from Products.filter.utils import macro_render, createContext, ijoin
 from Products.PageTemplates.Expressions import PathExpr, getEngine
 
+from zope.interface import implements
+from interface import IFieldFilter
+
 import re
 
 TALESEngine = getEngine()
 
-class FilterRegistry:
-    """ A simple registry for filters.  """
-
-    _filters = {}
-
-    def getAvailableFilters(self):
-        return self._filters.keys()
-
-    def register(self, filter):
-        self._filters[filter.name] = filter
-
-    def getFilter(self, name):
-        return self._filters[name]
-
-    def __call__(self, **kw):
-        if kw.has_key('name'):
-            return self.getFilter(kw['name'])
-
-_filterRegistry = FilterRegistry()
-
-def getFilter(name):
-    return _filterRegistry(name=name)
-
-def registerFilter(filter):
-    return _filterRegistry.register(filter)
-
-def getRegistry():
-    return _filterRegistry
-
-
-
-class Filter:
-    """Abstract Base for filters.
-
-    Filters are the inverse of transforms.
-    Transforms create new versions of the object when the object is
-    set. This doesn't require runtime context.
-
-    Filters happen during object access (rendering for example) and
-    include the context the object is being run in.
-
-    Properly filters should implement the PortalTransforms.itransforms
-    interface and be used accordingly. In the future they will,
-    however for the purpose of this demo they will not as that
-    interface is designed around mimetype transformation which this is
-    not.
+class Filter(object):
+    """abstract base
     """
+    implements(IFieldFilter)
+    
     name = None    # required
     pattern = None
+    
+    def __init__(self, context):
+        self.context = context
 
-    def filter(self, instance, text, **kwargs):
-        """This is the only method required by the interface, the rest
-        is included so subclasses don't have to do so much lifting
-        """
+    def filter(self,  text, **kwargs):
         # Simple text replacement via co-op with the modules
         chunks = self.pattern.split(text)
         if len(chunks) == 1: # fastpath
@@ -78,16 +39,17 @@ class Filter:
         subs = []
         dynamic = chunks[1::2] # my ben, aren't you tricky..
         for d in dynamic:
-            subs.append(self._filterCore(instance, d, **kwargs))
+            subs.append(self._filterCore(d, **kwargs))
 
         # Now join the two lists (knowing that len(text) == subs+1)
         return ''.join(ijoin(chunks[::2], subs))
 
     __call__ = filter
 
-    def _filterCore(self, instance, chunk, **kwargs):
+    def _filterCore(self,  chunk, **kwargs):
         """Subclasses override this to provide specific impls"""
         return ''
+
 
 class MacroSubstitutionFilter(Filter):
     """filter content with simple runtime subst
@@ -97,14 +59,14 @@ class MacroSubstitutionFilter(Filter):
     name = "Macro Substitution Filter"
     pattern = re.compile('\$\$(\w+)\$\$')
     
-    def _macro_renderer(self, instance, macro, template=None, **kw):
+    def _macro_renderer(self,  macro, template=None, **kw):
         """render approved macros"""
         try:
             if not template:
-                view = _getViewFor(instance)
+                view = _getViewFor(self.context)
                 macro = view.macros[macro]
             else:
-                template = instance.restrictedTraverse(path=template)
+                template = self.context.restrictedTraverse(path=template)
                 macro = template.macros[macro]
         except ConflictError:
             raise
@@ -113,15 +75,14 @@ class MacroSubstitutionFilter(Filter):
             traceback.print_exc()
             return ''
 
-        context = createContext(instance, **kw)
-        return macro_render(macro, instance, context, **kw)
+        econtext = createContext(self.context, **kw)
+        return macro_render(macro, self.context, econtext, **kw)
 
 
-    def _filterCore(self, instance, chunk, **kwargs):
+    def _filterCore(self,  chunk, **kwargs):
         """Subclasses override this to provide specific impls"""
-        return self._macro_renderer(instance, chunk, template=kwargs.get('template'))
+        return self._macro_renderer(chunk, template=kwargs.get('template'))
 
-registerFilter(MacroSubstitutionFilter())
 
 class ReferenceLinkFilter(Filter):
     """designed to be used in HTML, implements a simple strategy for
@@ -146,7 +107,7 @@ class ReferenceLinkFilter(Filter):
     pattern = re.compile('\${reference/([^}]+?)}')
     relationship = config.LINK_RELATIONSHIP
 
-    def _filterCore(self, instance, chunk, **kwargs):
+    def _filterCore(self,  chunk, **kwargs):
         # Obtain the id of the reference from the expression
         parts =  chunk.split('/', 1)
         targetId = parts[:1]
@@ -154,18 +115,18 @@ class ReferenceLinkFilter(Filter):
         if targetId:
             targetId = targetId[0]
             # resolve references for this id and relationship
-            reference_tool = getToolByName(instance,
+            reference_tool = getToolByName(self.context,
                                            REFERENCE_CATALOG)
             # We employ two strategies here.
             # look for the targetId as a UID (this is the most
             # flexible form as it allow even the object to be renamed)
-            brains = reference_tool._queryFor(sid=instance.UID(),
+            brains = reference_tool._queryFor(sid=self.context.UID(),
                                               tid=targetId,
                                               relationship=self.relationship)
             if not brains:
                 # look for targetId as an Id ( this is more common on
                 # smaller sites with hand coded HTML)
-                brains = reference_tool._queryFor(sid=instance.UID(),
+                brains = reference_tool._queryFor(sid=self.context.UID(),
                                                   targetId=targetId,
                                                   relationship=self.relationship)
 
@@ -173,7 +134,7 @@ class ReferenceLinkFilter(Filter):
                 # if there were no results we can't do anything
                 atlog('''Link Resolution Problem: %s references
                              missing object with id (%s)''' % (
-                    instance.getId(), targetId))
+                    self.context.getId(), targetId))
                 return chunk
             elif len(brains) > 1:
                 # there should only be one, however, its possible that
@@ -181,7 +142,7 @@ class ReferenceLinkFilter(Filter):
                 # this unlikely event we issue a warning and use the first
                 atlog('''Link Resolution Problem: %s references
                              more than one object with the same id (%s)''' % (
-                    instance.getId(), targetId))
+                    self.context.getId(), targetId))
                 brains = (brains[0],)
 
 
@@ -204,19 +165,16 @@ class ReferenceLinkFilter(Filter):
         # update the ref catalog and use a new relationship that
         # inlcudes this information as the referenceClass.
         # Extensions/Install/configureReferenceCatalog shows this
-        context = createContext(instance,
+        econtext = createContext(self.context,
                                 reference=refobj,
                                 Title=brain.targetTitle,
                                 URL=brain.targetURL,
                                 )
         # and evaluate the expression
-        result = expression(context)
+        result = expression(econtext)
         if callable(result):
             result = result()
         return result
-
-registerFilter(ReferenceLinkFilter())
-
 
 class PaginatingFilter(Filter):
     """
@@ -304,10 +262,10 @@ class PaginatingFilter(Filter):
                 break
 
 
-    def filter(self, instance, text, **kwargs):
+    def filter(self,  text, **kwargs):
         page = kwargs.get('page')
         if not page:
-            page = instance.REQUEST.get('page', 1)
+            page = self.context.REQUEST.get('page', 1)
         page = int(page)
         if page == 0: page = 1 # non-geek counting
 
@@ -332,22 +290,19 @@ class PaginatingFilter(Filter):
                 'prev'    : max(page, 1),
                 'next'    : min(page + 2, len(pages)),
                 }
-            context = createContext(instance,
+            econtext = createContext(self.context,
                                     **data)
 
             # reuse some of the macro code to render the "pages" macro
             # and insert a pager into the resultant text
-            template = instance.restrictedTraverse(path=kwargs.get('template'))
+            template = self.context.restrictedTraverse(path=kwargs.get('template'))
             if template:
                 macro = template.macros['pages']
-                text = macro_render(macro, instance, context)
+                text = macro_render(macro, self.context, econtext)
                 p = p + text
         return p
 
     __call__ = filter
-
-registerFilter(PaginatingFilter())
-
 
 class WeakWikiFilter(Filter):
     ## This just showns another type of Wiki-like dynamic filtering
@@ -357,8 +312,8 @@ class WeakWikiFilter(Filter):
     name = "Weak Wiki Filter"
     pattern = re.compile('([A-Z][a-z]+[A-Z]\w+)')
 
-    def _filterCore(self, instance, chunk, **kwargs):
-        pc = instance.portal_catalog
+    def _filterCore(self,  chunk, **kwargs):
+        pc = self.context.portal_catalog
         brains = pc(Title=chunk)
 
         # lets only handle unique matches
@@ -370,20 +325,20 @@ class WeakWikiFilter(Filter):
                 'url' : url,
                 'anchor' : chunk,
                 }
-            context = createContext(instance,
+            
+            econtext = createContext(self.context,
                                     **data)
 
             # reuse some of the macro code to render the "wikilink" macro
             # and insert a stylized link into the output
-            template = instance.restrictedTraverse(path=kwargs.get('template'))
+            template = self.context.restrictedTraverse(path=kwargs.get('template'))
             if template:
                 macro = template.macros['wikilink']
-                return macro_render(macro, instance, context)
+                return macro_render(macro, self.context, econtext)
 
         return chunk
 
-registerFilter(WeakWikiFilter())
-
+__all__=('Filter', 'WeakWikiFilter', 'PaginatingFilter', 'ReferenceLinkFilter', 'MacroSubstitutionFilter')
 
 
 

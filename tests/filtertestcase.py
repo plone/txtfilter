@@ -1,12 +1,16 @@
-from Products import filter
+import traceback as tb
 from Testing import ZopeTestCase
+from Products.PloneTestCase import ptc
+# should ztc load CA? I mean, when are you
+# really test units in zope2
 
 pkgs = ( 'Archetypes',
          'filter' )
 
-[ ZopeTestCase.installProduct(pkg) for pkg in pkgs ]
+[ ptc.installProduct(pkg) for pkg in pkgs ] 
 
-from Products.CMFPlone.tests import PloneTestCase
+from Products.PloneTestCase.setup import zcml, setUp, tearDown
+
 from Products.Archetypes.tests.ArchetypesTestCase import ArcheSiteTestCase
 
 # util for making content in a container
@@ -17,14 +21,66 @@ def makeContent(container, id, portal_type, title=None):
         o.setTitle(title)
     return o
 
+class ZCMLLoad(object):
+    zcml = zcml
+    def __init__(self, pkg):
+        self.clear()
+        self.pkg = pkg
+        
+    def clear(self):
+        self._loaded={}
+        self._load_order=[]
+        
+    def load(self, name='configure.zcml', warn=True):
+        if not self._loaded.get(name, False):
+            try:
+                self.zcml.load_config(name, self.pkg)
+            except :
+                if warn:
+                    print "\n %s\n ----------------- \n %s \n" %(name, tb.print_exc())
+            self._loaded[name] = True
+            self._load_order.append(name)
+            return True
+        return False
+
+    def loadmeta(self):
+        return self.load('meta.zcml')
+    
+import Products.Five
+import Products.filter
+import Products.filter.example
+fivezcml = ZCMLLoad(Products.Five)
+filterzcml = ZCMLLoad(Products.filter)
+examplezcml = ZCMLLoad(Products.filter.example)
+
+# at conf must proceed filter
+from Products import filter
+
+def setupCA():
+    tearDown()
+    setUp()
+    fivezcml.loadmeta()
+    fivezcml.load('permissions.zcml')
+    
+    filterzcml.loadmeta()
+
+    examplezcml.load()
+    [loader.clear() for loader in fivezcml, \
+     filterzcml, examplezcml,]
+    
+ptc.setupPloneSite(products=['filter'])
+
 class FilterTestCase(ArcheSiteTestCase):
     """ General class for filter tests """
-    
+
+    setupCA = staticmethod(setupCA)
+
     def afterSetUp(self):
-        ArcheSiteTestCase.afterSetUp(self)
-        
-        # install a test type here
-        self.portal.portal_quickinstaller.installProducts(['filter'], stoponerror=True)
+        super(ArcheSiteTestCase, self).afterSetUp()
+
+        self.setupCA()
         
         # Because we add skins this needs to be called. Um... ick.
         self._refreshSkinData()
+
+

@@ -1,11 +1,13 @@
+"""
+this example may be getting dated ;) 2005/12/12
+"""
+
 __authors__ = 'bcsaller, brcwhit'
 __docformat__ = 'restructuredtext'
 
+from zope.interface import Interface, implements
 from Products.Archetypes.TemplateMixin import TemplateMixin, TemplateMixinSchema
 from Products.Archetypes import public as atapi
-from Products.filter import config 
-from Products.filter import api  
-from Products.filter import utils
 
 try:
     import Products.ATReferenceBrowserWidget.ATReferenceBrowserWidget as rbw
@@ -15,23 +17,32 @@ except :
     usingRBW=False
     refwidget = atapi.ReferenceWidget
 
-available_filters = api.getRegistry().getAvailableFilters()
+try:
+    from Products.ATReferenceBrowserWidget import ATReferenceBrowserWidget as rbw
+    refwidget = rbw.ReferenceBrowserWidget
+    usingRBW=True
+except ImportError:
+    usingRBW=False
+    refwidget = atapi.ReferenceWidget
+
+from Products.filter import utils, field, config, api
+from Products.filter.interface import IFilterable
 
 schema = atapi.BaseSchema.copy() + atapi.Schema((
-        api.FilterField( "body",
-                         required=1,
-                         searchable=1,
-                         template='smartlink_doc_view',
-                         filter=available_filters,
-                         primary=True,
-                         page_size_kb=4096,
-                         default_content_type='text/html',
-                         default_output_type='text/html',
-                         widget=atapi.RichWidget( label="Body",
-                                                  description="This should be an explanation of how to use this field. see ben's walkthrough for Bricolite for now",
+    field.FilterField( "body",
+                       required=1,
+                       searchable=1,
+                       template='smartlink_doc_view',
+                       filter=utils.providedFieldFilters(), # not a real life good idea
+                       primary=True,
+                       page_size_kb=4096,
+                       default_content_type='text/html',
+                       default_output_type='text/html',
+                       widget=atapi.RichWidget( label="Body",
+                                                description="This should be an explanation of how to use this field. see ben's walkthrough for Bricolite for now",
                                                   rows=15 ),
-                         allowable_content_types=( 'text/html',
-                                                   'text/x-rst',
+                       allowable_content_types=( 'text/html',
+                                                 'text/x-rst',
                                                    )
                      
                      ),
@@ -56,8 +67,8 @@ schema = atapi.BaseSchema.copy() + atapi.Schema((
                                                """,
                                                ),
                              ),
-        
-        )) + TemplateMixinSchema.copy()
+    
+    )) + TemplateMixinSchema.copy()
 
 schema['layout'].schemata = 'presentation'
 
@@ -66,7 +77,7 @@ class Smartlink(TemplateMixin, atapi.BaseContent):
     Basic frankenstenized example for test suite
     and exhibition of filtration
     """
-
+    implements(IFilterable)
     portal_type=meta_type='Smartlink'
     archetype_name='filter ex'
     

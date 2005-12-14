@@ -16,8 +16,6 @@ from Products.CMFCore.DirectoryView import registerDirectory
 import api
 import config
 
-from filter import FilterRegistry
-
 registerDirectory(config.SKINS_DIR, config.GLOBALS)
 
 def initialize(context):

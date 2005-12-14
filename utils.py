@@ -5,6 +5,8 @@ from Products.PageTemplates.Expressions import getEngine
 from os.path import abspath, dirname, join
 from cStringIO import StringIO
 
+from Products.filter.interface import IFieldFilter
+
 TYPEMAP = {
     # strings = True, iterables = false
     type(''):False,
@@ -51,3 +53,10 @@ def ijoin(a,b):
 DIR_PATH = abspath(dirname(__file__))
 def doc_file(file):
     return join(DIR_PATH, 'doc', file)
+
+from Products.filter import filter as filters
+
+def providedFieldFilters():
+    klasses = [getattr(filters, klass) for klass in filters.__all__]
+    available_filters = [klass.name for klass in klasses if klass.name] 
+    return available_filters

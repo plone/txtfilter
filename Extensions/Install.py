@@ -32,14 +32,17 @@ def configureReferenceCatalog(portal, out):
         catalog.manage_reindexIndex(indexName)
 
 def configureWysiwyg(portal, out):
-    """ a nicety """
-    editors = portal.portal_properties.site_properties.getProperty('available_editors')
+    props = getToolByName(portal, 'portal_properties')
+    if not hasattr(props, 'site_properties'): # not plone
+        return
+    
+    editors = props.site_properties.getProperty('available_editors')
     if "Kupu" in editors:
         # move it up in the list
         editors = list(editors)
         editors.remove('Kupu')
         editors = ['Kupu',] + editors
-        portal.portal_properties.site_properties._updateProperty('available_editors', editors)
+        props.site_properties._updateProperty('available_editors', editors)
 
 def install(self):
     """ set this up to only load """
@@ -52,7 +55,8 @@ def install(self):
 
     install_subskin(self, out, GLOBALS)
     
-    if usingRBW:
+    if usingRBW and\
+           not self.portal_quickinstaller.isProductInstalled('ATReferenceBrowserWidget'):
         self.portal_quickinstaller.installProducts(['ATReferenceBrowserWidget'], stoponerror=True)
     
     configureReferenceCatalog(self, out)
