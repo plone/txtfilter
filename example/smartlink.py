@@ -25,8 +25,8 @@ except ImportError:
     usingRBW=False
     refwidget = atapi.ReferenceWidget
 
-from Products.filter import utils, field, config, api
-from Products.filter.interfaces import IFilterable
+from Products.txtfilter import utils, field, config, api
+from Products.txtfilter.interfaces import IFilterable
 
 schema = atapi.BaseSchema.copy() + atapi.Schema((
     field.FilterField( "body",

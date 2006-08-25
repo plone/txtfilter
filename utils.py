@@ -5,7 +5,7 @@ from Products.PageTemplates.Expressions import getEngine
 from os.path import abspath, dirname, join
 from cStringIO import StringIO
 
-from Products.filter.interfaces import IFieldFilter
+from Products.txtfilter.interfaces import IFieldFilter
 
 TYPEMAP = {
     # strings = True, iterables = false
@@ -54,7 +54,7 @@ DIR_PATH = abspath(dirname(__file__))
 def doc_file(file):
     return join(DIR_PATH, 'doc', file)
 
-from Products.filter import filter as filters
+from Products.txtfilter import filter as filters
 
 def providedFieldFilters():
     klasses = [getattr(filters, klass) for klass in filters.__all__]

@@ -5,7 +5,7 @@ from Products.PloneTestCase import ptc
 # really testing units in zope2
 
 pkgs = ( 'Archetypes',
-         'filter' )
+         'txtfilter' )
 
 [ ptc.installProduct(pkg) for pkg in pkgs ] 
 
@@ -47,14 +47,14 @@ class ZCMLLoad(object):
         return self.load('meta.zcml')
     
 import Products.Five
-import Products.filter
-import Products.filter.example
+import Products.txtfilter
+import Products.txtfilter.example
 fivezcml = ZCMLLoad(Products.Five)
-filterzcml = ZCMLLoad(Products.filter)
-examplezcml = ZCMLLoad(Products.filter.example)
+filterzcml = ZCMLLoad(Products.txtfilter)
+examplezcml = ZCMLLoad(Products.txtfilter.example)
 
 # at conf must proceed filter
-from Products import filter
+from Products import txtfilter
 
 def setupCA():
     tearDown()
@@ -68,7 +68,7 @@ def setupCA():
     [loader.clear() for loader in fivezcml, \
      filterzcml, examplezcml,]
     
-ptc.setupPloneSite(products=['filter'], required_zcml=setupCA)
+ptc.setupPloneSite(products=['txtfilter'], required_zcml=setupCA)
 
 class FilterTestCase(ArcheSiteTestCase):
     """ General class for filter tests """
@@ -78,7 +78,6 @@ class FilterTestCase(ArcheSiteTestCase):
         setupCA()
         # Because we add skins this needs to be called. Um... ick.
         self._refreshSkinData()
-
 
     def beforeTearDown(self):
         tearDown()

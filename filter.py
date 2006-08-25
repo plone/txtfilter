@@ -4,12 +4,12 @@ $Id: $
 from Products.Archetypes import public as atapi
 from Products.Archetypes.debug import log as atlog
 from Products.Archetypes.config import REFERENCE_CATALOG
-from Products.filter import config as config
+from Products.txtfilter import config as config
 from Products.CMFCore import CMFCorePermissions
 from Products.CMFCore.utils import getToolByName, _getViewFor
 from ZODB.POSException import ConflictError
 
-from Products.filter.utils import macro_render, createContext, ijoin
+from Products.txtfilter.utils import macro_render, createContext, ijoin
 from Products.PageTemplates.Expressions import PathExpr, getEngine
 
 from zope.interface import implements

@@ -1,5 +1,5 @@
-from Products.filter.config import *
-from Products.filter.example.smartlink import usingRBW
+from Products.txtfilter.config import *
+from Products.txtfilter.example.smartlink import usingRBW
 from Products.Archetypes import public as atapi
 from Products.Archetypes import listTypes
 from Products.Archetypes.Extensions.utils import installTypes, install_subskin

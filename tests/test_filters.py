@@ -13,8 +13,8 @@ if __name__ == '__main__':
 from Testing                 import ZopeTestCase
 from Products.CMFCore.utils  import getToolByName
 from filtertestcase import FilterTestCase, makeContent
-from Products.filter.utils import doc_file
-from Products.filter.example import Smartlink
+from Products.txtfilter.utils import doc_file
+from Products.txtfilter.example import Smartlink
 
 # our example type
 portal_type = Smartlink.portal_type

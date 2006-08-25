@@ -4,7 +4,7 @@
     <meta:directive
        name="fieldfilter"
        namespace="http://namespaces.zope.org/archetypes"
-       schema="Products.filter.filterdirective.IFieldFilterDirective"
-       handler="Products.filter.filterdirective.fieldfilter"
+       schema="Products.txtfilter.filterdirective.IFieldFilterDirective"
+       handler="Products.txtfilter.filterdirective.fieldfilter"
      />
 </configure>
