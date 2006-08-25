@@ -62,8 +62,6 @@ def setupCA():
     fivezcml.loadmeta()
     fivezcml.load('permissions.zcml')
     
-    filterzcml.loadmeta()
-
     examplezcml.load()
     [loader.clear() for loader in fivezcml, \
      filterzcml, examplezcml,]
