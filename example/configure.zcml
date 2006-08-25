@@ -1,0 +1,32 @@
+<configure 
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:five="http://namespaces.zope.org/five"
+   xmlns:at="http://namespaces.zope.org/archetypes">
+
+  <!-- the fieldfilter directive will take all the same 
+       arguments as the adapter directive, but 
+       defaults to a name=txtfilter.name and 
+       provides=IFieldFilter 
+     / -->
+
+  <at:txtfilter
+     for="Products.filter.interfaces.IFilterable"
+     factory="Products.filter.txtfilter.MacroSubstitutionFilter"
+     />
+
+  <at:txtfilter
+     for="Products.filter.interfaces.IFilterable"
+     factory="Products.filter.txtfilter.ReferenceLinkFilter"
+     />
+
+  <at:txtfilter
+     for="Products.filter.interfaces.IFilterable"
+     factory="Products.filter.txtfilter.WeakWikiFilter"
+     />
+
+  <at:txtfilter
+     for="Products.filter.interfaces.IFilterable"
+     factory="Products.filter.txtfilter.PaginatingFilter"
+     />
+
+</configure>

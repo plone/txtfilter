@@ -1,0 +1,50 @@
+<html>
+  <body>
+
+
+    <div metal:define-macro="body">
+
+      <div tal:replace="structure here/getBody">
+        The Body -- this will have any media embedded in it.
+      </div>
+
+    </div>
+
+    <!-- simple select with js to change pages (and the default macro) -->
+    <!-- used by the paginating filter. the accesskeys alt-n and alt-p -->
+    <!-- will page you through the document -->
+    <div metal:define-macro="pages"
+      tal:define="current python:int(request.get('page', 1));">
+      <div id="page-select">
+      <form>
+      <tal:hasPrev condition="python: current &gt; 1">
+        <a accesskey="p" id="prev" class="pager" tal:attributes="href
+          string:${here/absolute_url}?page:int=${prev}"><u>P</u>rev</a>
+      </tal:hasPrev>
+
+      <tal:hasNext condition="python: current &lt; pages">
+        <a accesskey="n" class="pager" tal:attributes="href
+            string:${here/absolute_url}?page:int=${next}"><u>N</u>ext</a>
+      </tal:hasNext>
+
+      <a tal:attributes="href
+        string:${here/absolute_url}?page:int=-1">All</a>
+
+      <select name="url" onchange="location.href=form.url.options[form.url.selectedIndex].value">
+          <option               tal:repeat="page python:range(1, pages+1)"
+          tal:attributes="value string:${here/absolute_url}?page=${page};
+          selected python:test(current == page, 1, 0);"
+
+          tal:content="page"/>
+      </select>
+      </form>
+      </div>
+    </div>
+
+    <div metal:define-macro="wikilink"><a class="wiki-link"
+        tal:attributes="href url"
+        tal:content="anchor"/></div>
+
+
+  </body>
+</html>
