@@ -1,8 +1,11 @@
-from zope.interface import Interface
+from zope.interface import Interface, Attribute
 from Products.Archetypes.interfaces.field import IFileField
 
+class IFilterDecorator(Interface):
+    """ decorator for a method """
+
 class IFilterable(Interface):
-    """
+    """s
     this will later simply be applied to AT once
     AT's interfaces are sanified
     """
@@ -47,6 +50,9 @@ class IFieldFilter(Interface):
     interface is designed around mimetype transformation which this is
     not.
     """
+    
+    context = Attribute('context the filter is running in')
+
     def filter(text, **kwargs):
         """This is the only method required by the interface, the rest
         is included so subclasses don't have to do so much lifting
@@ -59,4 +65,13 @@ class IFieldFilter(Interface):
 
     def __call__(chunk, **kwargs):
         """Normally an alias to filter
+        """
+
+class IMacroFilter(IFieldFilter):
+    """
+    Filter content with simple runtime substitution
+    """
+    def _macro_renderer(macro, template=None, **kw):
+        """
+        render macros
         """

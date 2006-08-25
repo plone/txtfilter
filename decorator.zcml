@@ -1,0 +1,13 @@
+<configure
+   xmlns:at="http://namespaces.zope.org/archetypes">
+
+  <!-- configures 'FilterField' get as an instance checked for
+       txtfilter -->
+
+  <at:applyTxtFilter
+     method="get"
+     class="Products.filter.field.FilterField"
+     contextInterface="Products.Archetypes.interfaces.IBaseObject" 
+     />
+
+</configure>

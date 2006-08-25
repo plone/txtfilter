@@ -19,16 +19,17 @@ import config
 registerDirectory(config.SKINS_DIR, config.GLOBALS)
 
 def initialize(context):
-    import example
+    if config.INSTALL_TYPES:
+        import example
     
-    types = atapi.listTypes(config.PROJECTNAME)
+        types = atapi.listTypes(config.PROJECTNAME)
 
-    content_types, constructors, ftis = atapi.process_types( types,
-                                                             config.PROJECTNAME)
-    cmf_utils.ContentInit(
-        config.PROJECTNAME + ' Example Content',
-        content_types      = content_types,
-        permission         = CMFCorePermissions.AddPortalContent,
-        extra_constructors = constructors,
-        fti                = ftis,
-        ).initialize(context)
+        content_types, constructors, ftis = atapi.process_types( types,
+                                                                 config.PROJECTNAME)
+        cmf_utils.ContentInit(
+            config.PROJECTNAME + ' Example Content',
+            content_types      = content_types,
+            permission         = CMFCorePermissions.AddPortalContent,
+            extra_constructors = constructors,
+            fti                = ftis,
+            ).initialize(context)

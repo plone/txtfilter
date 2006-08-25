@@ -54,9 +54,9 @@ DIR_PATH = abspath(dirname(__file__))
 def doc_file(file):
     return join(DIR_PATH, 'doc', file)
 
-from Products.filter import filter as filters
+from Products.filter import txtfilter 
 
-def providedFieldFilters():
-    klasses = [getattr(filters, klass) for klass in filters.__all__]
+def providedTxtFilters():
+    klasses = [getattr(txtfilter, klass) for klass in txtfilter.__all__]
     available_filters = [klass.name for klass in klasses if klass.name] 
     return available_filters

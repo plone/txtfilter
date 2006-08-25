@@ -1,10 +1,18 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:meta="http://namespaces.zope.org/meta">
+  <meta:directives namespace="http://namespaces.zope.org/archetypes">
     <meta:directive
-       name="fieldfilter"
-       namespace="http://namespaces.zope.org/archetypes"
-       schema="Products.filter.filterdirective.IFieldFilterDirective"
-       handler="Products.filter.filterdirective.fieldfilter"
+       name="applyTxtFilter"
+       schema=".txtfilterdirective.IApplyTxtFilterDirective"
+       handler=".metaconfigure.decorateMethod"
      />
+
+    <meta:directive
+       name="txtfilter"
+       schema=".txtfilterdirective.ITxtFilterDirective"
+       handler=".metaconfigure.txtfilter"
+     />
+
+  </meta:directives>
 </configure>
