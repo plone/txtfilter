@@ -1,0 +1,10 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
+    <meta:directive
+       name="fieldfilter"
+       namespace="http://namespaces.zope.org/archetypes"
+       schema="Products.filter.filterdirective.IFieldFilterDirective"
+       handler="Products.filter.filterdirective.fieldfilter"
+     />
+</configure>
