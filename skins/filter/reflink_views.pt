@@ -1,0 +1,22 @@
+<html>
+  <body>
+
+    <!-- default view for ultralinkdoc object -->
+    <!-- by default we render the contents widget, not that useful -->
+    <div metal:define-macro="default">
+      <div class="ultralinkdoc ultralinkdoc-default" metal:use-macro="python:here.widget('contents', mode='view')"/>
+    </div>
+
+    <!-- default image view -->
+    <div metal:define-macro="image" tal:define="tag here/getTagData">
+        <img class="ultralinkdoc ultralinkdoc-image" tal:attributes="src tag/URL;height tag/height; width tag/width;"/>
+    </div>
+
+   <!-- default for text; not it the spirit of ultralinkdoc exactly, but it -->
+   <!-- makes sense to show -->
+    <div metal:define-macro="text">
+        <div class="ultralinkdoc ultralinkdoc-text" tal:replace="structure contents"/>
+    </div>
+
+  </body>
+</html>
