@@ -1,44 +1,27 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:five="http://namespaces.zope.org/five">
-  <!-- this is the inanity of zcml that indicated
-       we need a new fricking directive -->
-
-  <!-- the fieldfilter directive will take all the same 
-       arguments as the adapter directive, but 
-       defaults to a filter=filter.name and 
-       provides=IFieldFilter 
-
-    just as soon as I can get it to work ;) -->
 
   <adapter
      name = "Macro Substitution Filter"
-     for="Products.txtfilter.interfaces.IFilterable"
      factory="Products.txtfilter.filter.MacroSubstitutionFilter"
-     provides="Products.txtfilter.interfaces.IFieldFilter"
      permission="zope2.Public"
      />
 
   <adapter
      name = "Reference Link"
-     for="Products.txtfilter.interfaces.IFilterable"
      factory="Products.txtfilter.filter.ReferenceLinkFilter"
-     provides="Products.txtfilter.interfaces.IFieldFilter"
      permission="zope2.Public"
      />
 
   <adapter
      name = "Weak Wiki Filter"
-     for="Products.txtfilter.interfaces.IFilterable"
      factory="Products.txtfilter.filter.WeakWikiFilter"
-     provides="Products.txtfilter.interfaces.IFieldFilter"
      permission="zope2.Public"
      />
 
   <adapter
      name = "HTML Paginator"
-     for="Products.txtfilter.interfaces.IFilterable"
      factory="Products.txtfilter.filter.PaginatingFilter"
-     provides="Products.txtfilter.interfaces.IFieldFilter"
      permission="zope2.Public"
      />
 
