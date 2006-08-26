@@ -8,6 +8,7 @@ __docformat__ = 'restructuredtext'
 from zope.interface import Interface, implements
 from Products.Archetypes.TemplateMixin import TemplateMixin, TemplateMixinSchema
 from Products.Archetypes import public as atapi
+from relation import EmbeddedContentReference
 
 try:
     import Products.ATReferenceBrowserWidget.ATReferenceBrowserWidget as rbw
@@ -52,7 +53,7 @@ schema = atapi.BaseSchema.copy() + atapi.Schema((
                              multiValued=True,
                              mutator="setEmbeddedContent",
                              allowed_types=('Smartlink',),
-                             referenceClass=api.EmbeddedContentReference,
+                             referenceClass=EmbeddedContentReference,
                              widget=refwidget( label="Doc Assets",
                                                description="""Any
                                                media assets referenced

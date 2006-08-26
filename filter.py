@@ -1,6 +1,7 @@
 """
 $Id: $
 """
+from zope.component import adapts
 from Products.Archetypes import public as atapi
 from Products.Archetypes.debug import log as atlog
 from Products.Archetypes.config import REFERENCE_CATALOG
@@ -19,10 +20,13 @@ import re
 
 TALESEngine = getEngine()
 
+from Products.txtfilter.interfaces import IFilterable
+
 class Filter(object):
-    """abstract base
+    """abstract base class for filters
     """
     implements(IFieldFilter)
+    adapts(IFilterable)
     
     name = None    # required
     pattern = None
@@ -52,7 +56,6 @@ class Filter(object):
 
 
 class MacroSubstitutionFilter(Filter):
-    implements(IMacroFilter)
     name = "Macro Substitution Filter"
 
     # This looks for $$key$$ in the text and replaces it

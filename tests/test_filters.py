@@ -12,7 +12,7 @@ if __name__ == '__main__':
 
 from Testing                 import ZopeTestCase
 from Products.CMFCore.utils  import getToolByName
-from filtertestcase import FilterTestCase, makeContent
+from txtfiltertestcase import FilterTestCase, makeContent
 from Products.txtfilter.utils import doc_file
 from Products.txtfilter.example import Smartlink
 

@@ -1,5 +1,5 @@
 from Products.Archetypes.references import HoldingReference
-from config import LINK_RELATIONSHIP
+from Products.txtfilter.config import LINK_RELATIONSHIP
 
 class EmbeddedContentReference(HoldingReference):
     relationship = LINK_RELATIONSHIP

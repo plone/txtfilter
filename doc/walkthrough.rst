@@ -9,6 +9,7 @@ Bricolite - An Introduction to Archetypes
            product as well as creating your own Archetypes based Products.*
 
 
+note: this is left for historical purposes
 
 Introduction
 ~~~~~~~~~~~~~
