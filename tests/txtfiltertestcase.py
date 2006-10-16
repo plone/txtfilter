@@ -9,7 +9,7 @@ pkgs = ( 'Archetypes',
 
 [ ptc.installProduct(pkg) for pkg in pkgs ] 
 
-from Products.Archetypes.tests.ArchetypesTestCase import ArcheSiteTestCase
+from Products.Archetypes.tests.atsitetestcase import ATSiteTestCase
 
 # util for making content in a container
 def makeContent(container, id, portal_type, title=None):
@@ -24,11 +24,11 @@ from Products import txtfilter
 
 ptc.setupPloneSite(products=['txtfilter'])
 
-class FilterTestCase(ArcheSiteTestCase):
+class FilterTestCase(ATSiteTestCase):
     """ General class for filter tests """
 
     def afterSetUp(self):
-        super(ArcheSiteTestCase, self).afterSetUp()
+        super(ATSiteTestCase, self).afterSetUp()
         # Because we add skins this needs to be called. Um... ick.
         self._refreshSkinData()
 
