@@ -13,22 +13,26 @@ pipeline(see field.FilterField).
 Highlights
 ==========
 
-txtfilter.field.FilterField::
+txtfilter.field.FilterField
+---------------------------
 
    A drop-in replacement for the archetypes TextField.  Add one
    additional property: filters, an iterable returning names of filters.
 
-txtfilter.filter::
+txtfilter.filter
+----------------
 
    Abstract class Filter forms the basis for 4 filters:
    MacroSubstitutionFilter, ReferenceLinkFilter, PaginatingFilter,
    WeakWikiFilter
 
-txtfilter.example::
+txtfilter.example
+-----------------
 
    An example content type that uses the field and all filters
 
-txtfilter.interfaces::
+txtfilter.interfaces
+--------------------
 
    Documentation on api.
 
