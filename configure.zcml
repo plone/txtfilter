@@ -1,6 +1,5 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:five="http://namespaces.zope.org/five">
-
   <adapter
      name = "Reference Link"
      factory="Products.txtfilter.filter.ReferenceLinkFilter"
@@ -24,5 +23,4 @@
      factory="Products.txtfilter.filter.MacroSubstitutionFilter"
      permission="zope2.Public"
      />
-
 </configure>
