@@ -6,8 +6,8 @@ from Products.Archetypes import public as atapi
 from Products.Archetypes.debug import log as atlog
 from Products.Archetypes.config import REFERENCE_CATALOG
 from Products.txtfilter import config as config
-from Products.CMFCore import CMFCorePermissions
-from Products.CMFCore.utils import getToolByName, _getViewFor
+from Products.CMFCore import permissions as CMFCorePermissions
+from Products.CMFCore.utils import getToolByName
 from ZODB.POSException import ConflictError
 
 from Products.txtfilter.utils import macro_render, createContext, ijoin
@@ -55,35 +55,35 @@ class Filter(object):
         return ''
 
 
-class MacroSubstitutionFilter(Filter):
-    name = "Macro Substitution Filter"
+## class MacroSubstitutionFilter(Filter):
+##     name = "Macro Substitution Filter"
 
-    # This looks for $$key$$ in the text and replaces it
-    pattern = re.compile('\$\$(\w+)\$\$')
+##     # This looks for $$key$$ in the text and replaces it
+##     pattern = re.compile('\$\$(\w+)\$\$')
     
-    def _macro_renderer(self,  macro, template=None, **kw):
-        """render approved macros"""
-        try:
-            if not template:
-                view = _getViewFor(self.context)
-                macro = view.macros[macro]
-            else:
-                template = self.context.restrictedTraverse(path=template)
-                macro = template.macros[macro]
-        except ConflictError:
-            raise
-        except:
-            import traceback
-            traceback.print_exc()
-            return ''
+##     def _macro_renderer(self,  macro, template=None, **kw):
+##         """render approved macros"""
+##         try:
+##             if not template:
+##                 view = _getViewFor(self.context)
+##                 macro = view.macros[macro]
+##             else:
+##                 template = self.context.restrictedTraverse(path=template)
+##                 macro = template.macros[macro]
+##         except ConflictError:
+##             raise
+##         except:
+##             import traceback
+##             traceback.print_exc()
+##             return ''
 
-        econtext = createContext(self.context, **kw)
-        return macro_render(macro, self.context, econtext, **kw)
+##         econtext = createContext(self.context, **kw)
+##         return macro_render(macro, self.context, econtext, **kw)
 
 
-    def _filterCore(self,  macro, template, **kwargs):
-        """ in the macro filter, all chunks are macros """
-        return self._macro_renderer(macro, template=template, **kwargs)
+##     def _filterCore(self,  macro, template, **kwargs):
+##         """ in the macro filter, all chunks are macros """
+##         return self._macro_renderer(macro, template=template, **kwargs)
 
 
 class ReferenceLinkFilter(Filter):
@@ -340,7 +340,7 @@ class WeakWikiFilter(Filter):
 
         return chunk
 
-__all__=('Filter', 'WeakWikiFilter', 'PaginatingFilter', 'ReferenceLinkFilter', 'MacroSubstitutionFilter')
+__all__=('Filter', 'WeakWikiFilter', 'PaginatingFilter', 'ReferenceLinkFilter')
 
 
 

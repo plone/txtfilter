@@ -18,9 +18,4 @@
      permission="zope2.Public"
      />
 
-  <adapter
-     name = "Macro Substitution Filter"
-     factory="Products.txtfilter.filter.MacroSubstitutionFilter"
-     permission="zope2.Public"
-     />
 </configure>

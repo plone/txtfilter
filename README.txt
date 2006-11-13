@@ -22,8 +22,8 @@ txtfilter.field.FilterField
 txtfilter.filter
 ----------------
 
-   Abstract class Filter forms the basis for 4 filters:
-   MacroSubstitutionFilter, ReferenceLinkFilter, PaginatingFilter,
+   Abstract class Filter forms the basis for 3 filters:
+   ReferenceLinkFilter, PaginatingFilter,
    WeakWikiFilter
 
 txtfilter.example
