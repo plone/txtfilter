@@ -1,0 +1,9 @@
+Changelog for txtfilter
+
+    (name of developer listed in brackets)
+
+txtfilter - 0.1 Unreleased
+
+    - Initial package structure.
+      [zopeskel]
+
