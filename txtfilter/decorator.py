@@ -1,6 +1,6 @@
 from zope.interface import implements
 from zope.component import queryAdapter
-from Products.filter.interfaces import IFilterField, IFieldFilter, IFilterDecorator
+from txtfilter.interfaces import IFilterField, IFieldFilter, IFilterDecorator
 
 _marker = object()
 
@@ -28,7 +28,7 @@ class FilterDecorator(object):
             __name__=method.__name__
             __doc__="""%s
             -----------------
-            This method is filtered. see Products.filter
+            This method is filtered. see txtfilter
             """ %method.__doc__
             value = method(*args, **kwargs)
             if [True for kw in self.skipkw if kwargs.get(kw, False)]:

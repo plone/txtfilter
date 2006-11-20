@@ -6,7 +6,7 @@
 
   <at:applyTxtFilter
      method="get"
-     class="Products.filter.field.FilterField"
+     class="txtfilter.at.field.FilterField"
      contextInterface="Products.Archetypes.interfaces.IBaseObject" 
      />
 
