@@ -1,25 +1,38 @@
 """
-remove rest of bricolite specific content and add test content
+@@ remove rest of bricolite specific content and add test content
 """
-
 import os, sys
 import unittest
 from sets import Set
 import traceback
 
-if __name__ == '__main__':
-    execfile(os.path.join(sys.path[0], 'framework.py'))
+from txtfilter.at.utils import doc_file
+from txtfilter.at.example import Smartlink
 
-from Testing                 import ZopeTestCase
-from Products.CMFCore.utils  import getToolByName
-from filtertestcase import FilterTestCase, makeContent
-from Products.filter.utils import doc_file
-from Products.filter.example import Smartlink
+import txtfilter.at.config
+from Products.PloneTestCase import ptc
+
+ptc.installProduct('txtfilter.at') 
+
+# util for making content in a container
+def makeContent(container, id, portal_type, title=None):
+    container.invokeFactory(id=id, type_name=portal_type)
+    o = getattr(container, id)
+    if title is not None:
+        o.setTitle(title)
+    return o
+
+ptc.setupPloneSite(products=['txtfilter.at'])
 
 # our example type
 portal_type = Smartlink.portal_type
 
-class FilterTest(FilterTestCase):
+class FilterTest(ptc.PloneTestCase):
+
+    def afterSetUp(self):
+        super(ptc.PloneTestCase, self).afterSetUp()
+        # Because we add skins this needs to be called. Um... ick.
+        self._refreshSkinData()
 
     def test_chunksingleton(self):
         c1 = makeContent(self.folder, 'content1', portal_type, 'ContentOne')
@@ -83,5 +96,3 @@ def test_suite():
     suite.addTest(unittest.makeSuite(FilterTest))
     return suite
 
-if __name__ == '__main__':
-    framework()

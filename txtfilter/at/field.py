@@ -8,7 +8,7 @@ __authors__ = 'Benjamin Saller <bcsaller@objectrealms.net>'
 __docformat__ = 'restructuredtext'
 
 from Products.Archetypes import public as atapi
-from Products.filter.interfaces import IFilterField
+from txtfilter.interfaces import IFilterField
 from zope.interface import implements
 
 class FilterField(atapi.TextField):
