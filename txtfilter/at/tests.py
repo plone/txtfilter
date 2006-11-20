@@ -6,7 +6,7 @@ import unittest
 from sets import Set
 import traceback
 
-from txtfilter.at.utils import doc_file
+from txtfilter.utils import doc_file
 from txtfilter.at.example import Smartlink
 
 import txtfilter.at.config

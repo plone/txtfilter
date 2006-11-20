@@ -2,12 +2,16 @@
 this example may be getting dated ;) 2005/12/12
 """
 
-__authors__ = 'bcsaller, brcwhit'
+__authors__ = 'bcsaller'
 __docformat__ = 'restructuredtext'
 
-from zope.interface import Interface, implements
-from Products.Archetypes.TemplateMixin import TemplateMixin, TemplateMixinSchema
 from Products.Archetypes import public as atapi
+from Products.Archetypes.TemplateMixin import TemplateMixin, TemplateMixinSchema
+from txtfilter.at import field, config
+from txtfilter.at.example.txtfilter import providedTxtFilters
+from txtfilter.interfaces import IFilterable
+from zope.interface import Interface, implements
+from Products.Archetypes.references import HoldingReference
 
 try:
     import Products.ATReferenceBrowserWidget.ATReferenceBrowserWidget as rbw
@@ -25,16 +29,13 @@ except ImportError:
     usingRBW=False
     refwidget = atapi.ReferenceWidget
 
-from txtfilter import utils, api
-from txtfilter.at import field, config
-from txtfilter.interfaces import IFilterable
 
 schema = atapi.BaseSchema.copy() + atapi.Schema((
     field.FilterField( "body",
                        required=1,
                        searchable=1,
                        template='smartlink_doc_view',
-                       txtfilter=utils.providedTxtFilters(), # not a real life good idea
+                       txtfilter=providedTxtFilters(), # not a real life good idea
                        primary=True,
                        page_size_kb=4096,
                        default_content_type='text/html',
@@ -53,7 +54,7 @@ schema = atapi.BaseSchema.copy() + atapi.Schema((
                              multiValued=True,
                              mutator="setEmbeddedContent",
                              allowed_types=('Smartlink',),
-                             referenceClass=api.EmbeddedContentReference,
+                             referenceClass=EmbeddedContentReference,
                              widget=refwidget( label="Doc Assets",
                                                description="""Any
                                                media assets referenced
@@ -83,12 +84,24 @@ class Smartlink(TemplateMixin, atapi.BaseContent):
     archetype_name='filter ex'
     
     schema = schema
-
-    def __call__(self):
-        """return the view registered for this media object"""
-        macro = self.unrestrictedTraverse(self.getLayout())
-        context = utils.createContext(self,
-                                      contents=self.Schema()['body'].get(self))
-        return utils.macro_render(macro, self, context)
     
 atapi.registerType(Smartlink, config.PROJECTNAME)
+
+class EmbeddedContentReference(HoldingReference):
+    relationship = config.LINK_RELATIONSHIP
+
+    # In addition to being a normal holding reference
+    # we want to track the URL of the target for easy brains based
+    # linking. For this to work the reference catalog should be
+    # updated to inlcude this index and metadata.
+    def targetURL(self):
+        target = self.getTargetObject()
+        if target:
+            return target.absolute_url()
+        return '#'
+
+    def targetContentType(self):
+        target = self.getTargetObject()
+        if target:
+            return target.getContentType()
+        return 'application/octet'
