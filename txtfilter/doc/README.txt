@@ -8,12 +8,20 @@ example product.
 
 note: walkthrough.rst still refers to bricolite, not filter.
 
+credits
+=======
+
+bcsaller@objectrealm.net
+
+whit@openplans.org
+
+
 Requirements
 ===========
 
-* Archetypes 1.4.+
+* for at features: Archetypes 1.5.+
 
-* Zope 2.9.+
+* Zope 2.10+
 
 
 What does it do
