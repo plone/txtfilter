@@ -11,22 +11,22 @@
 
   <at:txtfilter
      for="txtfilter.interfaces.IFilterable"
-     factory="txtfilter.txtfilter.MacroSubstitutionFilter"
+     factory="._txtfilter.MacroSubstitutionFilter"
      />
 
   <at:txtfilter
      for="txtfilter.interfaces.IFilterable"
-     factory="txtfilter.txtfilter.ReferenceLinkFilter"
+     factory="._txtfilter.ReferenceLinkFilter"
      />
 
   <at:txtfilter
      for="txtfilter.interfaces.IFilterable"
-     factory="txtfilter.txtfilter.WeakWikiFilter"
+     factory="._txtfilter.WeakWikiFilter"
      />
 
   <at:txtfilter
      for="txtfilter.interfaces.IFilterable"
-     factory="txtfilter.txtfilter.PaginatingFilter"
+     factory="._txtfilter.PaginatingFilter"
      />
 
 </configure>

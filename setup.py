@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '0.1'
+version = '1.0.1'
 
 setup(name='txtfilter',
       version=version,
@@ -18,7 +18,7 @@ setup(name='txtfilter',
       keywords='wicked txtfilter zope3 zope2 AT',
       author='whit',
       author_email='wicked@lists.openplans.org',
-      url='/txtfilter',
+      url='http://www.openplans.org/projects/wicked/txtfilter',
       license='MIT',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['txtfilter'],

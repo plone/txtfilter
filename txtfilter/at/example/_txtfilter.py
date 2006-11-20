@@ -1,87 +1,19 @@
-"""
-$Id: $
-"""
 from Products.Archetypes import public as atapi
-from Products.Archetypes.debug import log as atlog
 from Products.Archetypes.config import REFERENCE_CATALOG
-from Products.filter import config as config
-from Products.CMFCore import CMFCorePermissions
-from Products.CMFCore.utils import getToolByName, _getViewFor
-from ZODB.POSException import ConflictError
-
-from Products.filter.utils import macro_render, createContext, ijoin
-from Products.PageTemplates.Expressions import PathExpr, getEngine
-
-from zope.interface import implements
-from interfaces import IFieldFilter, IMacroFilter
-
+from Products.Archetypes.debug import log as atlog
+from Products.CMFCore import permissions as CMFCorePermissions
+from Products.CMFCore.utils import getToolByName
+from zope.tales.expressions import PathExpr
+from Products.PageTemplates.Expressions import getEngine
+from Products.PageTemplates.Expressions import SecureModuleImporter
+from TAL.TALInterpreter import TALInterpreter
+from cStringIO import StringIO
+from os.path import abspath, dirname, join
+from txtfilter.at import config as config
+from txtfilter._txtfilter import Filter
 import re
 
 TALESEngine = getEngine()
-
-class Filter(object):
-    """abstract base
-    """
-    implements(IFieldFilter)
-    
-    name = None    # required
-    pattern = None
-    
-    def __init__(self, context):
-        self.context = context
-
-    def filter(self,  text, **kwargs):
-        # Simple text replacement via co-op with the modules
-        chunks = self.pattern.split(text)
-        if len(chunks) == 1: # fastpath
-            return text
-
-        subs = []
-        dynamic = chunks[1::2] # my ben, aren't you tricky..
-
-        subs = [self._filterCore(d, **kwargs) for d in dynamic]
-
-        # Now join the two lists (knowing that len(text) == subs+1)
-        return ''.join(ijoin(chunks[::2], subs))
-
-    __call__ = filter
-
-    def _filterCore(self,  chunk, **kwargs):
-        """Subclasses override this to provide specific impls"""
-        return ''
-
-
-class MacroSubstitutionFilter(Filter):
-    implements(IMacroFilter)
-    name = "Macro Substitution Filter"
-
-    # This looks for $$key$$ in the text and replaces it
-    pattern = re.compile('\$\$(\w+)\$\$')
-    
-    def _macro_renderer(self,  macro, template=None, **kw):
-        """render approved macros"""
-        try:
-            if not template:
-                view = _getViewFor(self.context)
-                macro = view.macros[macro]
-            else:
-                template = self.context.restrictedTraverse(path=template)
-                macro = template.macros[macro]
-        except ConflictError:
-            raise
-        except:
-            import traceback
-            traceback.print_exc()
-            return ''
-
-        econtext = createContext(self.context, **kw)
-        return macro_render(macro, self.context, econtext, **kw)
-
-
-    def _filterCore(self,  macro, template, **kwargs):
-        """ in the macro filter, all chunks are macros """
-        return self._macro_renderer(macro, template=template, **kwargs)
-
 
 class ReferenceLinkFilter(Filter):
     """designed to be used in HTML, implements a simple strategy for
@@ -337,7 +269,38 @@ class WeakWikiFilter(Filter):
 
         return chunk
 
-__all__=('Filter', 'WeakWikiFilter', 'PaginatingFilter', 'ReferenceLinkFilter', 'MacroSubstitutionFilter')
+## TAL Magic
+def macro_render(macro, aq_ob, context, **kwargs):
+    assert macro, """No macro was provided"""
+    buffer = StringIO()
+    TALInterpreter(macro, {}, context, buffer)()
+    return buffer.getvalue()
 
+def createContext(object, **kwargs):
+    '''
+    An expression context provides names for TALES expressions.
+    '''
+    pm = getToolByName(object, 'portal_membership')
+    if pm.isAnonymousUser():
+        member = None
+    else:
+        member = pm.getAuthenticatedMember()
 
+    data = {
+        'context'     : object,
+        'here'        : object,
+        'nothing':      None,
+        'request':      getattr(object, 'REQUEST', None ),
+        'modules':      SecureModuleImporter,
+        'member':       member,
+        }
+    data.update(kwargs)
+    return getEngine().getContext(data)
 
+def providedFieldFilters():
+    here = globals()
+    klasses = [here.get(klass) for klass in __all__]
+    available_filters = [klass.name for klass in klasses if klass.name] 
+    return available_filters
+
+__all__=('WeakWikiFilter', 'PaginatingFilter', 'ReferenceLinkFilter')

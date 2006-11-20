@@ -67,11 +67,4 @@ class IFieldFilter(Interface):
         """Normally an alias to filter
         """
 
-class IMacroFilter(IFieldFilter):
-    """
-    Filter content with simple runtime substitution
-    """
-    def _macro_renderer(macro, template=None, **kw):
-        """
-        render macros
-        """
+

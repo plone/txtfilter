@@ -1,11 +1,10 @@
 from Extensions import Install
 del Install
 from Products.Archetypes import public as atapi
-from Products.CMFCore import CMFCorePermissions
+from Products.CMFCore import permissions as CMFCorePermissions
 from Products.CMFCore import utils as cmf_utils
 from Products.CMFCore.DirectoryView import registerDirectory
 
-import api
 import config
 
 registerDirectory(config.SKINS_DIR, config.GLOBALS)

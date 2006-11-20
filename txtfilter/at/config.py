@@ -1,5 +1,5 @@
 LINK_RELATIONSHIP     = "field embed"
-PROJECTNAME="filter"
+PROJECTNAME="txtfilter.at"
 GLOBALS = globals()
 SKINS_DIR='skins'
 

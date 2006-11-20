@@ -1,14 +1,10 @@
-"""
-mild switcheroo on the the old adapter to create super simple fieldfilter directive
-"""
+from zope.interface import Interface
+import txtfilter.interfaces
+import zope.component.zcml
+import zope.app.security.fields
 import zope.configuration.fields as fields
 import zope.interface
 import zope.schema
-
-import zope.app.security.fields
-import zope.app.component.metadirectives 
-import Products.filter.interfaces
-from zope.interface import Interface
 
 class IApplyTxtFilterDirective(Interface):
     class_ = fields.GlobalObject(
@@ -46,17 +42,20 @@ class IApplyTxtFilterDirective(Interface):
         )
 
 
-class ITxtFilterDirective(zope.app.component.metadirectives.IAdapterDirective):
+class ITxtFilterDirective(zope.component.zcml.IAdapterDirective):
     """
     Register an adapter
-    """
+    ===================
 
+    mild switcheroo on the the old adapter to create super simple
+    fieldfilter directive
+    """
     provides = zope.configuration.fields.GlobalObject(
         title=u"Interface the component provides",
-        description=u"""This attribute specifes the interface the adapter
-        instance must provide.""",
+        description=u"This attribute specifes the interface the adapter instance must"\
+                    u"provide.",
         required=True,
-        default=Products.filter.interfaces.IFieldFilter
+        default=txtfilter.interfaces.IFieldFilter
         )
     
     trusted = zope.configuration.fields.Bool(
