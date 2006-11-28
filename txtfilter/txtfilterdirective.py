@@ -1,3 +1,5 @@
+#from collective.testing.zcml import exc_actions_raise
+#exc_actions_raise()
 from zope.interface import Interface
 import txtfilter.interfaces
 import zope.component.zcml
@@ -5,8 +7,31 @@ import zope.app.security.fields
 import zope.configuration.fields as fields
 import zope.interface
 import zope.schema
+from txtfilter.interfaces import IFilterList
 
-class IApplyTxtFilterDirective(Interface):
+class NewLineTokens(fields.Tokens):
+    """ token field that splits on newline not space """
+    
+    def fromUnicode(self, u):
+        u = u.strip()
+        if u:
+            vt = self.value_type.bind(self.context)
+            values = []
+            for s in u.split('\\n'):
+                try:
+                    v = vt.fromUnicode(s)
+                except schema.ValidationError, v:
+                    raise InvalidToken("%s in %s" % (v, u))
+                else:
+                    values.append(v)
+        else:
+            values = []
+
+        self.validate(values)
+        return values
+
+
+class IFilterOutputDirective(Interface):
     class_ = fields.GlobalObject(
         title=u"Class",
         required=True
@@ -18,21 +43,6 @@ class IApplyTxtFilterDirective(Interface):
         required=True,
         default=u'',
         )
-    
-    txtfilters = fields.Tokens(
-        title=u"Filters to be applied to this method",
-        description=u"""
-        a list of filters in the order they should be applied to the
-        method output. If left empty, methodInstance.txtfilter will be
-        checked""",
-        required=False,
-        value_type=fields.GlobalObject(missing_value=str()))
-    
-    contextInterface = fields.GlobalObject(
-        title=u"Interface that context provides if context is not the method's instance",
-        description=u"For AT compatibility",
-        required=False
-        )
 
     skipkeywords = fields.Tokens(
         title=u"Keywords to skip",
@@ -40,6 +50,38 @@ class IApplyTxtFilterDirective(Interface):
         required=False,
         value_type=fields.GlobalObject(missing_value=str())
         )
+    
+    txtfilter = NewLineTokens(
+        title=u"Filters to be applied to this method",
+        description=u"""
+        a list of filters in the order they should be applied to the
+        method output. If left empty, arguments  will be
+        adapted to filter list interface to get a list""",
+        required=False,
+        value_type=zope.schema.TextLine(missing_value=str()))
+
+    interface = fields.GlobalObject(
+        title=u"interface providing names of filters",
+        required=True,
+        default=IFilterList
+        )
+
+    arguments = fields.Tokens(
+        title=u"Arguments to be adapted",
+        description=u"""
+        Which arguments hold the object used to dispatch filters. Order is
+        significant.
+        """,
+        required=False,
+        value_type=zope.schema.TextLine(missing_value=str()))
+
+#setattr(IFilterOutputDirective, 'adapted-arguments', adapted)
+    
+##     contextInterface = fields.GlobalObject(
+##         title=u"Interface that context provides if context is not the method's instance",
+##         description=u"For AT compatibility",
+##         required=False
+##         )
 
 
 class ITxtFilterDirective(zope.component.zcml.IAdapterDirective):

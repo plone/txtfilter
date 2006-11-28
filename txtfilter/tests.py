@@ -8,7 +8,11 @@ def test_suite():
                              package="txtfilter",
                              optionflags = doctest.REPORT_ONLY_FIRST_FAILURE | doctest.ELLIPSIS
                              )
-    # suite.layer = ZCMLLayer
-    return unittest.TestSuite((suite))
+    suite.layer = ZCMLLayer
+    directives = ZopeDocFileSuite('directives.txt',
+                             package="txtfilter",
+                             optionflags = doctest.REPORT_ONLY_FIRST_FAILURE | doctest.ELLIPSIS
+                             )    
+    return unittest.TestSuite((suite, directives))
     
 

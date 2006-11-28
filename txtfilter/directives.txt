@@ -1,0 +1,134 @@
+    >>> import pdb; st = pdb.set_trace
+    
+======================
+ txtfilter directives
+======================
+
+'txtfilter' provides 2 directives for configuring filterish behavior.
+These directives are called from the namespace
+'http://namespaces.openplans.org/wicked'.
+
+::test boilerplate::
+
+  >>> import Products.Five
+  >>> from Products.Five import zcml
+  >>> zcml.load_config("configure.zcml", Products.Five)
+  >>> context = zcml.load_string('''
+  ... <configure i18n_domain="zope">
+  ...   <include package="txtfilter" file="meta.zcml" />
+  ... </configure>
+  ... ''')
+
+filter-output
+=============
+
+filter-output applies a decorator to an arbitrary function
+that applies a set of filters to any output by the function.
+
+
+txtfilter
+=========
+
+registers a filter.  essentially the same as registering an adapter,
+but with some sugar to get the filter name. To do this, we wrap the normal
+adapter registration. here we test that wrapper::
+
+    >>> from txtfilter import metaconfigure as mc
+    >>> MockInstance = type('MockInstance', (object,), dict(name="hammersmith"))
+    >>> def func(*args, **kw):
+    ...     print "%s, %s" %tuple(sorted(kw.items()))
+    >>> newfunc = mc.wrap_registration(func)
+    >>> newfunc(factory=(MockInstance(),))
+    ('factory', (<MockInstance object at ...>,)), ('name', 'hammersmith')
+
+directives in python
+====================
+
+first we'll create a trivial filter and register it. for a filter to
+work, it must be able to accept a context and return a callable that
+takes a value and kwargs::
+
+    >>> from zope.interface import alsoProvides, implementer, Interface, implements
+    >>> class IField(Interface):
+    ...     """ contenter  """
+
+    >>> class MockField(object):
+    ...     implements(IField)
+    ...     def render1(self, **kwargs):
+    ...         return "cats will be dogs."
+    ...     
+    ...     def render2(self, instance, **kwargs):
+    ...         return "atomic dognip"
+
+    >>> from zope.component import adapter, provideAdapter
+    >>> from txtfilter.interfaces import IFieldFilter, EndFiltration
+    >>> @implementer(IFieldFilter)
+    ... @adapter(IField)
+    ... def trivial_filter(context):
+    ...     def myfilter(value, **kw):
+    ...         value = value.replace('dog', 'cat')
+    ...         return "%s:%s" %(context, value)
+    ...     return myfilter
+    >>> name = trivial_filter.name="Trivial Filter"
+    >>> provideAdapter(trivial_filter, name=name)
+
+The filter decorator object maintains state for a particular filtered
+method.  It's instantiation arguments are as follows: a list of
+filters to apply by name, a list of keywords to trigger skipping
+filter behavior if not null and an interface to match in the args to
+use as the rendering context.
+
+    >>> fd = mc.FilterDecorator(txtfilter=(name,), skipkw=('skip',))
+    >>> mock = MockField()
+
+'yield_filter' returns a generator of filters.
+
+    >>> list(fd.yield_filter(mock, [trivial_filter.name]))
+    [<function myfilter at ...>]
+
+'do_filter' applies the filters::
+
+    >>> fd.do_filter('dog for life' , mock)
+    '<MockField object at ...>:cat for life'
+
+we can apply the decorator like so:
+
+    >>> MockField.render1 = fd(MockField.render1)
+    >>> mock=MockField()
+    >>> mock.render1()
+    '<MockField object at ...>:cats will be cats.'
+
+Once the decorator is applied, the skip word is effective::
+
+    >>> mock.render1(skip=True)
+    'cats will be dogs.'
+
+The directive can take a list of arguments to use for retrieving
+filters and filter lists via multiadaption.  We'll use a multiadapter
+for this as well as a mock instance object. Effectively this simulates
+the action of an AT field call or z3 field call:
+
+    >>> class IInstance(Interface):
+    ...     """ an instance """
+
+    >>> @implementer(IFieldFilter)
+    ... @adapter(IField, IInstance)
+    ... def less_trivial_filter(context, instance):
+    ...     def myfancyfilter(value, **kw):
+    ...         value = value.replace('dog', 'supacat')
+    ...         return "%s\n%s\nvalue:%s" %(context, instance, value)
+    ...     return myfancyfilter
+    >>> less_trivial_filter.name="Fancy Filter"
+    >>> provideAdapter(less_trivial_filter, name=less_trivial_filter.name)
+
+    >>> fd = mc.FilterDecorator(txtfilter=(less_trivial_filter.name,), arguments=('self', 'instance'))
+    >>> MockField.render2 = fd(MockField.render2)
+    >>> mock1 = MockField()
+    >>> mock2 = MockInstance(); alsoProvides(mock2, IInstance)
+    >>> print mock1.render2(mock2)
+    <MockField object at ...>
+    <MockInstance object at ...>
+    value:atomic supacatnip
+
+    >>> from zope.testing.cleanup import cleanUp
+    >>> cleanUp()

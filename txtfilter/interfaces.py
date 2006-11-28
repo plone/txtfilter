@@ -1,5 +1,9 @@
 from zope.interface import Interface, Attribute
-from Products.Archetypes.interfaces.field import IFileField
+from Products.Archetypes.interfaces import IFileField
+from zope.interface.common.sequence import IReadSequence
+
+class IFilterList(IReadSequence):
+    """list of txtfilters to apply"""
 
 class IFilterDecorator(Interface):
     """ decorator for a method """
@@ -14,27 +18,10 @@ class IFilterField(IFileField):
     """
     An AT Text Field with assignable filtration.
 
-    Assignment is by name of the filter in a sequence.
+    Assignment of filters is by directive
     """
-    def filterGenerator(instance):
-        """
-        @generator of filters in sequence.
-        adapts instance and yields each filter 
-        """
-        
-    def get(instance, mimetype=None, raw=False, skip_filters=False,
-            **kwargs):
-        """from SmartLinkField: Do normal textfield get followed by filtering.
-        Whats interesting about this is that we need to staticly
-        encode this join point. The basic of the Archetypes V2 model
-        is that you could attach things like a filtering aspect to
-        any/all fields w/o altering their code base.
 
-        When you think about how many filters can be registered on the
-        same call this becomes an even more expressive argument for AOP.
-        """
-
-class IFieldFilter(Interface):
+class ITxtFilter(Interface):
     """Abstract Base for filters.
 
     Filters are the inverse of transforms.
@@ -67,4 +54,11 @@ class IFieldFilter(Interface):
         """Normally an alias to filter
         """
 
+class IFieldFilter(ITxtFilter):
+    """A filter that takes a field and a context"""
+    
+    def __init__(field, context):
+        """ multiadapting here """
 
+class EndFiltration(Exception):
+    """raise to stop continuation of filtering"""

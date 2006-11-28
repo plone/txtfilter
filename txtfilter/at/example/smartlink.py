@@ -1,5 +1,7 @@
 """
 this example may be getting dated ;) 2005/12/12
+
+see bottom for CA bits
 """
 
 __authors__ = 'bcsaller'
@@ -9,8 +11,9 @@ from Products.Archetypes import public as atapi
 from Products.Archetypes.TemplateMixin import TemplateMixin, TemplateMixinSchema
 from txtfilter.at import field, config
 from txtfilter.at.example._txtfilter import providedFieldFilters
-from txtfilter.interfaces import IFilterable
-from zope.interface import Interface, implements
+from txtfilter.interfaces import IFilterable, IFilterList, IFilterField
+from zope.interface import implements, implementer
+from zope.component import adapter
 from Products.Archetypes.references import HoldingReference
 
 try:
@@ -29,9 +32,9 @@ except ImportError:
     usingRBW=False
     refwidget = atapi.ReferenceWidget
 
+
 class EmbeddedContentReference(HoldingReference):
     relationship = config.LINK_RELATIONSHIP
-
     # In addition to being a normal holding reference
     # we want to track the URL of the target for easy brains based
     # linking. For this to work the reference catalog should be
@@ -48,6 +51,7 @@ class EmbeddedContentReference(HoldingReference):
             return target.getContentType()
         return 'application/octet'
 
+
 class Smartlink(TemplateMixin, atapi.BaseContent):
     """
     Basic frankenstenized example for test suite
@@ -61,7 +65,6 @@ class Smartlink(TemplateMixin, atapi.BaseContent):
                            required=1,
                            searchable=1,
                            template='smartlink_doc_view',
-                           txtfilter=providedFieldFilters(), # not a real life good idea
                            primary=True,
                            page_size_kb=4096,
                            default_content_type='text/html',
@@ -102,7 +105,20 @@ class Smartlink(TemplateMixin, atapi.BaseContent):
 
 atapi.registerType(Smartlink, config.PROJECTNAME)
 
-    
+# txtfilters lists for application may be declared in three way:
+# 1. by 'txtfilter' in the filter-output directive
+# 2. by an explicit interface for 'interface' in the filter-output
+#    directive
+# 3. by creating an adapter for your type(s) to IFilterList
+
+# this is an unsophisticated version that returns all the example
+# filters
+
+@implementer(IFilterList)
+@adapter(IFilterField, IFilterable)
+def filter_list(field, context):
+    return providedFieldFilters()
+
 
 
 

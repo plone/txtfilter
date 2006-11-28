@@ -1,5 +1,14 @@
 <configure xmlns="http://namespaces.zope.org/zope"
-	   xmlns:five="http://namespaces.zope.org/five">
+	   xmlns:five="http://namespaces.zope.org/five"
+	   xmlns:wicked="http://namespaces.openplans.org/wicked">
+
    <five:registerPackage package="txtfilter.at" 
        initialize="txtfilter.at.zope2.initialize" />
+
+   <five:implements 
+      class=".field.FilterField" 
+      interface="txtfilter.interfaces.IFilterField" />
+
+   <include package=".example" />
+
 </configure>

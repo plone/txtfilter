@@ -12,8 +12,6 @@ from txtfilter.at.example import Smartlink
 import txtfilter.at.config
 from Products.PloneTestCase import ptc
 
-ptc.installProduct('txtfilter.at') 
-
 # util for making content in a container
 def makeContent(container, id, portal_type, title=None):
     container.invokeFactory(id=id, type_name=portal_type)
@@ -33,6 +31,7 @@ class FilterTest(ptc.PloneTestCase):
         super(ptc.PloneTestCase, self).afterSetUp()
         # Because we add skins this needs to be called. Um... ick.
         self._refreshSkinData()
+        self.loginAsPortalOwner()
 
     def test_chunksingleton(self):
         c1 = makeContent(self.folder, 'content1', portal_type, 'ContentOne')

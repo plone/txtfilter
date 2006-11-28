@@ -1,4 +1,10 @@
 <configure
-   xmlns="http://namespaces.zope.org/zope">
-  <include file="decorator.zcml"/>
+   xmlns="http://namespaces.zope.org/zope"
+   >
+
+  <!-- configures 'FilterField' get as an instance checked for
+       txtfilter -->
+
+
+
 </configure>

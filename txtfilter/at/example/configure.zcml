@@ -1,7 +1,7 @@
 <configure 
    xmlns="http://namespaces.zope.org/zope"
    xmlns:five="http://namespaces.zope.org/five"
-   xmlns:at="http://namespaces.zope.org/archetypes">
+   xmlns:wicked="http://namespaces.openplans.org/wicked">
 
   <!-- the fieldfilter directive will take all the same 
        arguments as the adapter directive, but 
@@ -9,24 +9,32 @@
        provides=IFieldFilter 
      / -->
 
-  <at:txtfilter
-     for="txtfilter.interfaces.IFilterable"
-     factory="._txtfilter.MacroSubstitutionFilter"
-     />
-
-  <at:txtfilter
-     for="txtfilter.interfaces.IFilterable"
+  <wicked:txtfilter
+     for="txtfilter.interfaces.IFilterField
+	  txtfilter.interfaces.IFilterable"
      factory="._txtfilter.ReferenceLinkFilter"
      />
 
-  <at:txtfilter
-     for="txtfilter.interfaces.IFilterable"
+  <wicked:txtfilter
+     for="txtfilter.interfaces.IFilterField
+	  txtfilter.interfaces.IFilterable"
      factory="._txtfilter.WeakWikiFilter"
      />
 
-  <at:txtfilter
-     for="txtfilter.interfaces.IFilterable"
+  <wicked:txtfilter
+     for="txtfilter.interfaces.IFilterField
+	  txtfilter.interfaces.IFilterable"
      factory="._txtfilter.PaginatingFilter"
      />
+
+  <wicked:filter-output
+     method="get"
+     class="txtfilter.at.field.FilterField"
+     arguments="self
+		instance"
+     interface="txtfilter.interfaces.IFilterList"
+     />
+
+  <adapter factory=".smartlink.filter_list" />
 
 </configure>

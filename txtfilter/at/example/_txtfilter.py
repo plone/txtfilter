@@ -15,7 +15,12 @@ import re
 
 TALESEngine = getEngine()
 
-class ReferenceLinkFilter(Filter):
+class ATFieldFilter(Filter):
+    def __init__(self, field, context):
+        self.field = field
+        self.context = context
+
+class ReferenceLinkFilter(ATFieldFilter):
     """designed to be used in HTML, implements a simple strategy for
     doing TALES like expressions on references of a given relationship
 
@@ -107,7 +112,7 @@ class ReferenceLinkFilter(Filter):
             result = result()
         return result
 
-class PaginatingFilter(Filter):
+class PaginatingFilter(ATFieldFilter):
     """
     Pagination,
       'its not more professional, but you can show more ads'(tm)
@@ -235,7 +240,7 @@ class PaginatingFilter(Filter):
 
     __call__ = filter
 
-class WeakWikiFilter(Filter):
+class WeakWikiFilter(ATFieldFilter):
     ## This just showns another type of Wiki-like dynamic filtering
     ## transforms BumpyWords into links of something with that title
     ## exists in the portal_catalog
