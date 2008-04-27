@@ -8,7 +8,6 @@ setup(name='txtfilter',
       description="txtfilter provides generalized filtering facilities for processing text",
       long_description="""\
 """,
-      # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Framework :: Zope2",
         "Framework :: Zope3",
@@ -27,7 +26,4 @@ setup(name='txtfilter',
       install_requires=[
           'setuptools',
       ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
       )

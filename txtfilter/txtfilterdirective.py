@@ -1,13 +1,11 @@
-#from collective.testing.zcml import exc_actions_raise
-#exc_actions_raise()
 from zope.interface import Interface
 import txtfilter.interfaces
 import zope.component.zcml
-import zope.app.security.fields
 import zope.configuration.fields as fields
 import zope.interface
 import zope.schema
 from txtfilter.interfaces import IFilterList
+
 
 class NewLineTokens(fields.Tokens):
     """ token field that splits on newline not space """

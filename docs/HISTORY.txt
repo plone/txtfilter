@@ -2,7 +2,12 @@ Changelog for txtfilter
 
     (name of developer listed in brackets)
 
-txtfilter - 0.1 Unreleased
+txtfilter - 1.0.2 Unreleased
+
+    - Added conditional imports to avoid deprecation warnings.
+      [hannosch]
+
+txtfilter - 0.1
 
     - Initial package structure.
       [zopeskel]

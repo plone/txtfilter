@@ -1,10 +1,15 @@
 from txtfilter.interfaces import IFilterField, IFieldFilter, IFilterList
 from txtfilter.interfaces import IFilterDecorator, EndFiltration
-from zope.app.component.interface import provideInterface
-from zope.app.component.metaconfigure import adapter
 from zope.component import queryMultiAdapter, queryAdapter
 from zope.interface import implements
 import inspect as ins
+
+try:
+    from zope.component.interface import provideInterface
+    from zope.component.zcml import adapter
+except ImportError:
+    from zope.app.component.interface import provideInterface
+    from zope.app.component.metaconfigure import adapter
 
 _marker = object()
 
