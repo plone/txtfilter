@@ -12,7 +12,7 @@ def test_suite():
     directives = ZopeDocFileSuite('directives.txt',
                              package="txtfilter",
                              optionflags = doctest.REPORT_ONLY_FIRST_FAILURE | doctest.ELLIPSIS
-                             )    
+                             )
     return unittest.TestSuite((suite, directives))
-    
+
 

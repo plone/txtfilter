@@ -12,7 +12,7 @@ def configureReferenceCatalog(portal, out):
     """
     required for the ReferenceLinkFilter to work.
     """
-    
+
     catalog = getToolByName(portal, REFERENCE_CATALOG)
     for indexName, indexType in (
         ('targetId', 'FieldIndex'),
@@ -35,7 +35,7 @@ def configureWysiwyg(portal, out):
     props = getToolByName(portal, 'portal_properties')
     if not hasattr(props, 'site_properties'): # not plone
         return
-    
+
     editors = props.site_properties.getProperty('available_editors')
     if "Kupu" in editors:
         # move it up in the list
@@ -54,11 +54,11 @@ def install(self):
                  PROJECTNAME)
 
     install_subskin(self, out, GLOBALS)
-    
+
     if usingRBW and\
            not self.portal_quickinstaller.isProductInstalled('ATReferenceBrowserWidget'):
         self.portal_quickinstaller.installProducts(['ATReferenceBrowserWidget'], stoponerror=True)
-    
+
     configureReferenceCatalog(self, out)
     configureWysiwyg(self, out)
 

@@ -1,12 +1,12 @@
-<configure 
+<configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:five="http://namespaces.zope.org/five"
    xmlns:wicked="http://namespaces.openplans.org/wicked">
 
-  <!-- the fieldfilter directive will take all the same 
-       arguments as the adapter directive, but 
-       defaults to a name=txtfilter.name and 
-       provides=IFieldFilter 
+  <!-- the fieldfilter directive will take all the same
+       arguments as the adapter directive, but
+       defaults to a name=txtfilter.name and
+       provides=IFieldFilter
      / -->
 
   <wicked:txtfilter

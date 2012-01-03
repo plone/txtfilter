@@ -9,7 +9,7 @@ from txtfilter.interfaces import IFilterList
 
 class NewLineTokens(fields.Tokens):
     """ token field that splits on newline not space """
-    
+
     def fromUnicode(self, u):
         u = u.strip()
         if u:
@@ -48,7 +48,7 @@ class IFilterOutputDirective(Interface):
         required=False,
         value_type=fields.GlobalObject(missing_value=str())
         )
-    
+
     txtfilter = NewLineTokens(
         title=u"Filters to be applied to this method",
         description=u"""
@@ -74,7 +74,7 @@ class IFilterOutputDirective(Interface):
         value_type=zope.schema.TextLine(missing_value=str()))
 
 #setattr(IFilterOutputDirective, 'adapted-arguments', adapted)
-    
+
 ##     contextInterface = fields.GlobalObject(
 ##         title=u"Interface that context provides if context is not the method's instance",
 ##         description=u"For AT compatibility",
@@ -97,7 +97,7 @@ class ITxtFilterDirective(zope.component.zcml.IAdapterDirective):
         required=True,
         default=txtfilter.interfaces.IFieldFilter
         )
-    
+
     trusted = zope.configuration.fields.Bool(
         title=u"Trusted",
         description=u"""Make the adapter a trusted adapter
@@ -113,4 +113,4 @@ class ITxtFilterDirective(zope.component.zcml.IAdapterDirective):
         required=False,
         default=True,
         )
-    
+

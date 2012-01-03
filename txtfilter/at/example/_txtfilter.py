@@ -261,7 +261,7 @@ class WeakWikiFilter(ATFieldFilter):
                 'url' : url,
                 'anchor' : chunk,
                 }
-            
+
             econtext = createContext(self.context,
                                     **data)
 
@@ -305,7 +305,7 @@ def createContext(object, **kwargs):
 def providedFieldFilters():
     here = globals()
     klasses = [here.get(klass) for klass in __all__]
-    available_filters = [klass.name for klass in klasses if klass.name] 
+    available_filters = [klass.name for klass in klasses if klass.name]
     return available_filters
 
 __all__=('WeakWikiFilter', 'PaginatingFilter', 'ReferenceLinkFilter')

@@ -15,10 +15,10 @@ class Filter(object):
     """abstract base
     """
     implements(IFieldFilter)
-    
+
     name = None    # required
     pattern = None
-    
+
     def __init__(self, context):
         self.context = context
 

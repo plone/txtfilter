@@ -75,9 +75,9 @@ class Smartlink(TemplateMixin, atapi.BaseContent):
                            allowable_content_types=( 'text/html',
                                                      'text/x-rst',
                                                      )
-                     
+
                            ),
-        
+
         atapi.ReferenceField('embedded_content',
                              relationship=config.LINK_RELATIONSHIP,
                              multiValued=True,
@@ -98,7 +98,7 @@ class Smartlink(TemplateMixin, atapi.BaseContent):
                                                """,
                                                ),
                              ),
-    
+
         )) + TemplateMixinSchema.copy()
 
     schema['layout'].schemata = 'presentation'
@@ -123,7 +123,7 @@ def filter_list(field, context):
 
 
 
-    
+
 
 
 

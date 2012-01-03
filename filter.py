@@ -23,10 +23,10 @@ class Filter(object):
     """abstract base
     """
     implements(IFieldFilter)
-    
+
     name = None    # required
     pattern = None
-    
+
     def __init__(self, context):
         self.context = context
 
@@ -58,7 +58,7 @@ class MacroSubstitutionFilter(Filter):
     """
     name = "Macro Substitution Filter"
     pattern = re.compile('\$\$(\w+)\$\$')
-    
+
     def _macro_renderer(self,  macro, template=None, **kw):
         """render approved macros"""
         try:
@@ -325,7 +325,7 @@ class WeakWikiFilter(Filter):
                 'url' : url,
                 'anchor' : chunk,
                 }
-            
+
             econtext = createContext(self.context,
                                     **data)
 

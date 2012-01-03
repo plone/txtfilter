@@ -38,7 +38,7 @@ class FilterTest(ptc.PloneTestCase):
         c1.Schema()['body'].filter='Weak Wiki Filter'
         c1.setBody("BumpyWord",
                    mimetype="text/html")
-    
+
     def test_pagination(self):
         content = makeContent(self.folder, 'content', portal_type)
         # load in a document to use as body/text
@@ -88,7 +88,7 @@ class FilterTest(ptc.PloneTestCase):
 
         body = c1.getBody(template='smartlink_view')
         assert c2.absolute_url() in body
-        
+
 
 def test_suite():
     suite = unittest.TestSuite()

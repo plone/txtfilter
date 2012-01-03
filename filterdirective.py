@@ -6,7 +6,7 @@ import zope.interface
 import zope.schema
 
 import zope.app.security.fields
-import zope.app.component.metadirectives 
+import zope.app.component.metadirectives
 import Products.filter.interfaces
 
 class IFieldFilterDirective(zope.app.component.metadirectives.IAdapterDirective):
@@ -21,7 +21,7 @@ class IFieldFilterDirective(zope.app.component.metadirectives.IAdapterDirective)
         required=True,
         default=Products.filter.interfaces.IFieldFilter
         )
-    
+
     trusted = zope.configuration.fields.Bool(
         title=u"Trusted",
         description=u"""Make the adapter a trusted adapter
@@ -37,8 +37,8 @@ class IFieldFilterDirective(zope.app.component.metadirectives.IAdapterDirective)
         required=False,
         default=True,
         )
-    
-from zope.app.component.metaconfigure import adapter 
+
+from zope.app.component.metaconfigure import adapter
 def wrapforfilter(fx):
     name = 'name'
     def wrapper(*args, **kwargs):
@@ -47,5 +47,5 @@ def wrapforfilter(fx):
         kwarg[name] = kwargs.get(name, getattr(factory, name))
         fx(*args, **kwargs)
     return wrapper
-        
+
 fieldfilter = wrapforfilter(adapter)

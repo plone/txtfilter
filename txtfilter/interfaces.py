@@ -37,7 +37,7 @@ class ITxtFilter(Interface):
     interface is designed around mimetype transformation which this is
     not.
     """
-    
+
     context = Attribute('context the filter is running in')
 
     def filter(text, **kwargs):
@@ -56,7 +56,7 @@ class ITxtFilter(Interface):
 
 class IFieldFilter(ITxtFilter):
     """A filter that takes a field and a context"""
-    
+
     def __init__(field, context):
         """ multiadapting here """
 

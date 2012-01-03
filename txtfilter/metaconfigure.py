@@ -16,20 +16,20 @@ _marker = object()
 class FilterDecorator(object):
     implements(IFilterDecorator)
     name = u''
-    
+
     def __init__(self, txtfilter=tuple(), skipkw=tuple(), interface=None, arguments=tuple()):
         self.txtfilter = txtfilter
         self.interface = interface
         self.arguments = arguments
         self.skipkw=skipkw
-        if len(arguments)>1: 
+        if len(arguments)>1:
             self.queryAdapter = queryMultiAdapter
 
     def queryAdapter(self, obj, interface, name):
         if isinstance(obj, tuple) or isinstance(obj, list):
             obj = obj[0]
         return queryAdapter(obj, interface, name)
-    
+
     def yield_filter(self, obj, txtfilter):
         for filter_name in txtfilter:
             yield self.queryAdapter(obj, IFieldFilter, filter_name)
@@ -75,7 +75,7 @@ class FilterDecorator(object):
                 objects.append(args[0])
             return self.do_filter(value, objects, self.name, **kwargs)
         return wrappedmethod
-    
+
     __call__=wrap_method
 
 _method_monkies=[]
@@ -100,13 +100,13 @@ def decorateMethod(_context, class_, method,
                          if kw not in oldmethod.skipkw)
             oldmethod.skipkw=tuple(oldkw)
             oldmethod.arguments = oldmethod.arguments + arguments
-    
+
     _context.action(
         discriminator = (class_, method, tuple(txtfilter)),
         callable = wrap_method,
         args = (class_, method)
         )
-    
+
     if interface:
         _context.action(
             discriminator = None,
@@ -114,17 +114,17 @@ def decorateMethod(_context, class_, method,
             args = (interface.__module__ + '.' + interface.getName(),
                     interface)
             )
-        
+
 def cleanUp():
     # unmonkey!
     for class_, method, prename in _method_monkies:
         # setUp() triggers cleanups so we have to account for cleanups
         # before actual patching occurs
-        if hasattr(class_, prename): 
+        if hasattr(class_, prename):
             delattr(class_, method)
             setattr(class_, method, getattr(class_, prename))
             delattr(class_, prename)
-        
+
 from zope.testing.cleanup import addCleanUp
 addCleanUp(cleanUp)
 del addCleanUp
@@ -138,7 +138,7 @@ def wrap_registration(func):
         kwargs[name] = kwargs.get(name, getattr(factory, name))
         func(*args, **kwargs)
     return wrapper
-        
+
 txtfilter = wrap_registration(adapter)
 
 
